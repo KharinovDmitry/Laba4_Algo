@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Core.InternalSort
 {
-    internal class QuickSort
+    internal class QuickSort : IInternalSort
     {
+        public List<SortStep> Sort(IComparable[] arr)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Core.InternalSort
 {
-    internal class MergeSort
+    internal class MergeSort : IInternalSort
     {
+        public List<SortStep> Sort(IComparable[] arr)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
