@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Laba4_Algo", "Laba4_Algo\Laba4_Algo.csproj", "{08210DAE-2A83-4B77-84D4-F3EFF36A8110}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{874FB413-1243-4593-B869-06899031E154}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08210DAE-2A83-4B77-84D4-F3EFF36A8110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08210DAE-2A83-4B77-84D4-F3EFF36A8110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08210DAE-2A83-4B77-84D4-F3EFF36A8110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08210DAE-2A83-4B77-84D4-F3EFF36A8110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{874FB413-1243-4593-B869-06899031E154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{874FB413-1243-4593-B869-06899031E154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{874FB413-1243-4593-B869-06899031E154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{874FB413-1243-4593-B869-06899031E154}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB55695A-C395-4E7E-BF30-B29ECC411033}
+	EndGlobalSection
+EndGlobal
