@@ -8,6 +8,6 @@ namespace Core.ExternalSort
 {
     public interface IExternalSort
     {
-        public List<SortStep> Sort(IComparable[] arr);
+        public List<SortStep> Sort(string path, int key);
     }
 }

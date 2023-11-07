@@ -8,6 +8,6 @@ namespace Core.InternalSort
 {
     internal interface IInternalSort
     {
-        public List<SortStep> Sort(string path, int key);
+        public List<SortStep> Sort(IComparable[] arr);
     }
 }
