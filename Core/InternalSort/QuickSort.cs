@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace Core.InternalSort
 {
-    internal class QuickSort : IInternalSort
+    public class QuickSort : IInternalSort
     {
-        private List<SortStep> res;
+        private List<SortStep> res = new List<SortStep>();
 
-        public List<SortStep> Sort(IComparable[] arr)
+        public List<SortStep> Sort(int[] arr)
         {
             QuickSortStart(arr, 0, arr.Length - 1);
             return res;
         }
 
-        private int Partition(IComparable[] array, int minIndex, int maxIndex)
+        private int Partition(int[] array, int minIndex, int maxIndex)
         {
             var pivot = minIndex - 1;
             for (var i = minIndex; i < maxIndex; i++)
             {
                 res.Add(new SortStep(i, maxIndex, SortOperation.Compare));
 
-                if (array[i].CompareTo(array[maxIndex]) < 0)
+                if (array[i] < array[maxIndex])
                 {
                     pivot++;
                     res.Add(new SortStep(i, pivot, SortOperation.Swap));
@@ -37,7 +37,7 @@ namespace Core.InternalSort
             return pivot;
         }
 
-        private IComparable[] QuickSortStart(IComparable[] array, int minIndex, int maxIndex)
+        private int[] QuickSortStart(int[] array, int minIndex, int maxIndex)
         {
             if (minIndex >= maxIndex)
             {

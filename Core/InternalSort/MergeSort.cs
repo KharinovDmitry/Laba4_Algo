@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Core.InternalSort
 {
-    internal class MergeSort : IInternalSort
+    public class MergeSort : IInternalSort
     {
-        private List<SortStep> res;
+        private List<SortStep> res = new List<SortStep>();
 
-        public List<SortStep> Sort(IComparable[] arr)
+        public List<SortStep> Sort(int[] arr)
         {
             StartSort(arr, 0, arr.Length - 1);
             return res;
         }
 
-        private IComparable[] StartSort(IComparable[] array, int lowIndex, int highIndex)
+        private int[] StartSort(int[] array, int lowIndex, int highIndex)
         {
             if (lowIndex < highIndex)
             {
@@ -30,17 +30,20 @@ namespace Core.InternalSort
             return array;
         }
 
-        private void Merge(IComparable[] array, int lowIndex, int middleIndex, int highIndex)
+        private void Merge(int[] array, int lowIndex, int middleIndex, int highIndex)
         {
+            int[] arrCopy = new int[array.Length];
+            array.CopyTo(arrCopy, 0);
+
             var left = lowIndex;
             var right = middleIndex + 1;
-            var tempArray = new IComparable[highIndex - lowIndex + 1];
+            var tempArray = new int[highIndex - lowIndex + 1];
             var index = 0;
 
             while (left <= middleIndex && right <= highIndex)
             {
                 res.Add(new SortStep(left, right, SortOperation.Compare));
-                if (array[left].CompareTo(array[right]) < 0)
+                if (array[left] < array[right])
                 {
                     tempArray[index] = array[left];
                     left++;
@@ -54,32 +57,35 @@ namespace Core.InternalSort
                 index++;
             }
 
-            var c = 0;
-
             for (var i = left; i <= middleIndex; i++)
             {
-                res.Add(new SortStep(lowIndex + c, i, SortOperation.Swap));
-                c++;
-
                 tempArray[index] = array[i];
                 index++;
             }
 
             for (var i = right; i <= highIndex; i++)
             {
-                res.Add(new SortStep(lowIndex + c, i, SortOperation.Swap));
-                c++;
-
                 tempArray[index] = array[i];
                 index++;
             }
 
             for (var i = 0; i < tempArray.Length; i++)
             {
+                res.Add(new SortStep(tempArray[i], lowIndex + i, SortOperation.SetValue));
                 array[lowIndex + i] = tempArray[i];
             }
         }
 
-
+        private int findEl(int el, int[] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if(el == arr[i])
+                {
+                    return i;
+                }
+            }
+            throw new Exception();
+        }
     }
 }

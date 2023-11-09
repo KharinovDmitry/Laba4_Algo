@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Laba4_Algo
+namespace InternalSort
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,6 +23,7 @@ namespace Laba4_Algo
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainWindowVM();
         }
     }
 }
