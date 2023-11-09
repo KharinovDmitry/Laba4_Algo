@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Core.InternalSort
 {
-    internal interface IInternalSort
+    public interface IInternalSort
     {
-        public List<SortStep> Sort(IComparable[] arr);
+        public List<SortStep> Sort(int[] arr);
     }
 }
