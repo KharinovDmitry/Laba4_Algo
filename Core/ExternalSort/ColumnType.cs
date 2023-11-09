@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.ExternalSort
 {
-    public interface IExternalSort
+    internal class ColumnType
     {
-        public List<SortStep> Sort(string path, ColumnType columnType);
     }
 }

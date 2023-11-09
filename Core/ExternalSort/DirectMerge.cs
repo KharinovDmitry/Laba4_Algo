@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.ExternalSort
 {
-    public interface IExternalSort
+    internal class DirectMerge
     {
-        public List<SortStep> Sort(string path, ColumnType columnType);
     }
 }
