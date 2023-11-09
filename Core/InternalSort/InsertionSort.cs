@@ -15,9 +15,11 @@ namespace Core.InternalSort
             {
                 var key = arr[i];
                 var j = i;
+                res.Add(new SortStep(j - 1, i, SortOperation.Compare));
                 while ((j > 0) && (arr[j - 1] > key))
                 {
-                    res.Add(new SortStep(j - 1, i, SortOperation.Compare));
+                    if(res.Count > 1)
+                        res.Add(new SortStep(j - 1, i, SortOperation.Compare));
                     res.Add(new SortStep(j, j - 1, SortOperation.Swap));
 
                     (arr[j - 1], arr[j]) = (arr[j], arr[j - 1]);

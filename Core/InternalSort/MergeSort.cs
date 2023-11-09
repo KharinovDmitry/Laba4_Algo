@@ -75,17 +75,5 @@ namespace Core.InternalSort
                 array[lowIndex + i] = tempArray[i];
             }
         }
-
-        private int findEl(int el, int[] arr)
-        {
-            for (int i = 0; i < arr.Length; i++)
-            {
-                if(el == arr[i])
-                {
-                    return i;
-                }
-            }
-            throw new Exception();
-        }
     }
 }

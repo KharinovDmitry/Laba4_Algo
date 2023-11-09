@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InternalSort"
         mc:Ignorable="d"
+
         Title="MainWindow" Height="500" Width="1300">
     <Grid>
         <Button Command="{Binding Start}" Content="Старт" HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top" Width="75"/>

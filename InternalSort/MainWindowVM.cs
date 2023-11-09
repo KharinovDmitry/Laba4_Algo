@@ -163,8 +163,8 @@ namespace InternalSort
                 waveOut.Stop();
 
                 if(log.Operation != SortOperation.SetValue)
-                    Elements[log.FromIndex].SetBlack();
-                Elements[log.ToIndex].SetBlack();
+                    Elements[log.FromIndex].SetColorByValue(arr[log.FromIndex]);
+                Elements[log.ToIndex].SetColorByValue(arr[log.ToIndex]);
             }
         }
 
@@ -175,6 +175,7 @@ namespace InternalSort
             {
 
                 var el = new ElementVM(i * 10, i * 10, height, height - (array[i] * 4 + 4));
+                el.SetColorByValue(array[i]);
                 Elements.Add(el);
             }
         }
@@ -272,7 +273,7 @@ namespace InternalSort
             Y1 = y1;
             X2 = x2;
             Y2 = y2;
-            Colour = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0,0,0));
+            Colour = new SolidColorBrush(Color.FromRgb(0,0,0));
         }
 
         public void SwapWith(ElementVM el)
@@ -285,16 +286,22 @@ namespace InternalSort
 
         public void SetBlack()
         {
-            Colour = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 0, 0));
+            Colour = new SolidColorBrush(Color.FromRgb(0, 0, 0));
         }
 
         public void SetGreen()
         {
-            Colour = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 255, 0));
+            Colour = new SolidColorBrush(Color.FromRgb(0, 255, 0));
         }
         public void SetYellow()
         {
-            Colour = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 0));
+            Colour = new SolidColorBrush(Color.FromRgb(255, 255, 0));
+        }
+
+        public void SetColorByValue(int value)
+        {
+            byte val = (byte)(value * 2.55f);
+            Colour = new SolidColorBrush(Color.FromRgb(0, val, val));
         }
     }
 }
