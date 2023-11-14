@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -178,6 +179,8 @@ namespace CoreHelper.ExternalSort
                             sr.WriteLine(strA);
                             counterA--;
                             pickedA = false;
+                            actionMove.ElementA = elementA;
+                            actionMove.ElementB = elementB;
                             actionMove.ToFile = FileInput;
                             actionMove.FromFile = "a.txt";
                             actionMove.FromIndex = indexA;
@@ -191,6 +194,8 @@ namespace CoreHelper.ExternalSort
                             sr.WriteLine(strB);
                             counterB--;
                             pickedB = false;
+                            actionMove.ElementA = elementA;
+                            actionMove.ElementB = elementB;
                             actionMove.ToFile = FileInput;
                             actionMove.FromFile = "b.txt";
                             actionMove.FromIndex = indexB;
@@ -214,6 +219,8 @@ namespace CoreHelper.ExternalSort
                     sr.WriteLine(strB);
                     counterB--;
                     pickedB = false;
+                    actionMove.ElementA = elementA;
+                    actionMove.ElementB = elementB;
                     actionMove.ToFile = FileInput;
                     actionMove.FromFile = "b.txt";
                     actionMove.FromIndex = indexB;
@@ -301,6 +308,8 @@ namespace CoreHelper.ExternalSort
                                 sr.WriteLine(strA);
                                 counterA--;
                                 pickedA = false;
+                                actionMove.ElementA = elementA;
+                                actionMove.ElementB = elementB;
                                 actionMove.ToFile = FileInput;
                                 actionMove.FromFile = "a.txt";
                                 actionMove.FromIndex = indexA;
@@ -314,6 +323,8 @@ namespace CoreHelper.ExternalSort
                                 sr.WriteLine(strB);
                                 counterB--;
                                 pickedB = false;
+                                actionMove.ElementA = elementA;
+                                actionMove.ElementB = elementB;
                                 actionMove.ToFile = FileInput;
                                 actionMove.FromFile = "b.txt";
                                 actionMove.FromIndex = indexB;
@@ -329,6 +340,8 @@ namespace CoreHelper.ExternalSort
                             sr.WriteLine(strA);
                             counterA--;
                             pickedA = false;
+                            actionMove.ElementA = elementA;
+                            actionMove.ElementB = elementB;
                             actionMove.ToFile = FileInput;
                             actionMove.FromFile = "a.txt";
                             actionMove.FromIndex = indexA;
@@ -343,6 +356,8 @@ namespace CoreHelper.ExternalSort
                         sr.WriteLine(strB);
                         counterB--;
                         pickedB = false;
+                        actionMove.ElementA = elementA;
+                        actionMove.ElementB = elementB;
                         actionMove.ToFile = FileInput;
                         actionMove.FromFile = "b.txt";
                         actionMove.FromIndex = indexB;
