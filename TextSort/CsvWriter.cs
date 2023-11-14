@@ -1,10 +1,4 @@
 ﻿using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TextSort
 {
@@ -12,7 +6,7 @@ namespace TextSort
     {
         public static void WriteAnalyzeResult(AnalyzeResult result)
         {
-            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.Commercial;
+            ExcelPackage.LicenseContext = LicenseContext.Commercial;
             
             FileInfo file = new FileInfo("Charts.xlsx");
             using (ExcelPackage package = new ExcelPackage(file))
@@ -30,9 +24,9 @@ namespace TextSort
                 worksheet.Cells[1, 1].Value = "ArrLength";
                 worksheet.Cells[1, 2].Value = "Time";
 
-                Console.WriteLine($"> Algorithm {result.Title} run!\n");
-                Console.WriteLine("Count of words | Time in seconds");
-                Console.WriteLine("--------------------------------");
+                Console.WriteLine($"> Алгоритм {result.Title} запущен!\n");
+                Console.WriteLine("Количество слов | Время в сек.");
+                Console.WriteLine("------------------------------");
 
                 worksheet.Cells[1, 1].Value = "ArrLength";
                 worksheet.Cells[1, 2].Value = "Time";
@@ -42,14 +36,14 @@ namespace TextSort
                     var ArrLength = result.Measurements[i].ArrayLength;
                     var Time = result.Measurements[i].TimeInS;
 
-                    Console.Write($"{ArrLength}{string.Join("", Enumerable.Repeat(" ", 15 - ArrLength.ToString().Length))}|");
+                    Console.Write($"{ArrLength}{string.Join("", Enumerable.Repeat(" ", 16 - ArrLength.ToString().Length))}|");
                     Console.WriteLine($" {Time}");
 
                     worksheet.Cells[i + 2, 1].Value = ArrLength;
                     worksheet.Cells[i + 2, 2].Value = Time;
                 }
 
-                Console.WriteLine($"\n> Algorithm {result.Title} done!\n");
+                Console.WriteLine($"\n> Алгоритм {result.Title} выполнен!\n");
                 package.SaveAs(file);
             }
         }
