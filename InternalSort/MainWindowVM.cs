@@ -7,6 +7,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Core;
 using Core.InternalSort;
+using CoreHelper;
+using CoreHelper.InternalSort;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 

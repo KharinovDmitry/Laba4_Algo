@@ -32,7 +32,7 @@ namespace CoreHelper.ExternalSort
        
         public ObservableCollection<CellsLine> CellsLines { get; set; }
 
-        string path = "data.txt";
+        string path = "C:\\Users\\terro\\Source\\Repos\\Laba4_Algo\\Core\\ExternalSort\\data.txt";
         
 
         ColumnType typeOfSorting;

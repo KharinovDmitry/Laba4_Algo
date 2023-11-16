@@ -15,7 +15,7 @@ namespace Core.ExternalSort
         public Logger logger = new Logger();
         private int _columnNumber = 0;
         private ColumnType _columnType = ColumnType.str;
-        string FileInput = "data.txt";
+        string FileInput = "C:\\Users\\terro\\Source\\Repos\\Laba4_Algo\\Core\\ExternalSort\\data.txt";
         int maxWays = 3;
         LineComparer _lineComparer;
         public MultipathMergeSort(string filename, int columnNumber, ColumnType type, int maxWays)

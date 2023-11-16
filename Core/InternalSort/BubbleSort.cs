@@ -1,4 +1,6 @@
 ﻿using Core.ExternalSort;
+using CoreHelper;
+using CoreHelper.InternalSort;
 using System;
 using System.Collections.Generic;
 using System.Linq;
