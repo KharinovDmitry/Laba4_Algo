@@ -29,14 +29,17 @@ namespace CoreHelper.ExternalSort
         private IExternalSort sortingAlgorithm;
         int CNumber;
         string methodOfSorting;
+       
         public ObservableCollection<CellsLine> CellsLines { get; set; }
 
         string path = "data.txt";
         
+
         ColumnType typeOfSorting;
         public MainWindow()
         {
             InitializeComponent();
+           
             CellsLines = new() { new CellsLine(0), new CellsLine(1), new CellsLine(2), new CellsLine(3) };
             ObservableCollection<ExternalSteps> externalSteps = Logger.Logs;
             logListView.ItemsSource = externalSteps;
@@ -67,6 +70,7 @@ namespace CoreHelper.ExternalSort
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Logs.Clear();
             switch (methodOfSorting)
             {
                 case "Прямое слияние":

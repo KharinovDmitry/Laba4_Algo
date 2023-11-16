@@ -9,7 +9,7 @@ using CoreHelper.ExternalSort;
 
 namespace Core.ExternalSort
 {
-    public class MultipathMergeSort
+    public class MultipathMergeSort : IExternalSort
     {
         
         public Logger logger = new Logger();
@@ -28,16 +28,16 @@ namespace Core.ExternalSort
             this.SplitToFiles();
             
         }
-        
+        /*
         public async Task Sort(string filename, ColumnType type, int columnNumber)
         {
             FileInput = filename;
             _columnNumber = columnNumber;
             _columnType = type;
             this.SplitToFiles();
-            MultipathMergeSort dm = new MultipathMergeSort(filename, columnNumber, type);
-            dm.SorT();
+            
         }
+        */
 
         
         public MultipathMergeSort(string filename, int columnNumber, ColumnType type)
@@ -49,6 +49,7 @@ namespace Core.ExternalSort
             this.SplitToFiles();
         
         }
+        /*
         public MultipathMergeSort(string filename, int columnNumber)
         {
             FileInput = filename;
@@ -56,9 +57,14 @@ namespace Core.ExternalSort
             _lineComparer = new(_columnNumber, _columnType);
             this.SplitToFiles();           
         }
+        */
         
-        public void SorT()
+        public async Task Sort(string filename, ColumnType type, int columnNumber)
         {
+            FileInput = filename;
+            _columnNumber = columnNumber;
+            _columnType = type;
+            this.SplitToFiles();
             List<StreamReader> inputFiles = new();
             List<StreamWriter> outputFiles = new();
             List<bool> isInputValid = new();
