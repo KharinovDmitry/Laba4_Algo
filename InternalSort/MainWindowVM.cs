@@ -9,6 +9,7 @@ using Core;
 using Core.InternalSort;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using CoreHelper;
 
 namespace InternalSort
 {

@@ -22,7 +22,6 @@ namespace CoreHelper.ExternalSort
         private ColumnType _columnType = ColumnType.str;
         private long iterations, segments;
 
-
         public DirectMerge(ObservableCollection<CellsLine> cells)
         {
             _cells = cells;
@@ -83,7 +82,6 @@ namespace CoreHelper.ExternalSort
             {
                 long counter = 0;
                 bool flag = true;
-
                 while (!sr.EndOfStream)
                 {
                     if (counter == iterations)
@@ -397,22 +395,4 @@ namespace CoreHelper.ExternalSort
             }
         }
     }
-
-
-
-
-
-
-
-    /*
-
-    Model       -> ViewModel    -> View
-data    
-    array|cell  -> graphics     -> Canvas
-            notification    notification
-
-
-
-
- */
 }
