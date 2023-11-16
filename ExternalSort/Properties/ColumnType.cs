@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreHelper.InternalSort
+namespace CoreHelper.ExternalSort
 {
-    public interface IInternalSort
+    public enum ColumnType
     {
-        public List<SortStep> Sort(int[] arr);
+        integer, str
     }
 }
