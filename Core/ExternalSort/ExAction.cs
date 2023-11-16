@@ -19,15 +19,20 @@ namespace Core.ExternalSort
         public int ToIndex;
         public string FromFile;
         public string ToFile;
+        public object ElementA;
+        public object ElementB;
+
 
         public ExAction() { }
-        public ExAction(Action action, int fromIndex, int toIndex, string fromFile, string toFile) 
+        public ExAction(Action action, int fromIndex, int toIndex, string fromFile, string toFile, object elementA, object elementB)
         {
             Action = action;
             FromIndex = fromIndex;
-            ToIndex = toIndex;     
+            ToIndex = toIndex;
             FromFile = fromFile;
             ToFile = toFile;
+            ElementA = elementA;
+            ElementB = elementB;
         }
 
         public object Clone()

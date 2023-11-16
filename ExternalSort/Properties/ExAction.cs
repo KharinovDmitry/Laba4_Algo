@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using CoreHelper;
@@ -10,17 +12,17 @@ namespace Core.ExternalSort
     public enum Action
     {
         Compare,
-        Move
+        MoveAction
     }
-    public class ExAction : ICloneable
+    public class ExAction : ICloneable, INotifyPropertyChanged
     {
-        public Action Action;
+        public Action Action; 
         public int FromIndex;
         public int ToIndex;
         public string FromFile;
         public string ToFile;
         public object ElementA;
-        public object ElementB;
+        public object ElementB; 
 
 
         public ExAction() { }
@@ -35,6 +37,12 @@ namespace Core.ExternalSort
             ElementB = elementB;
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         public object Clone()
         {
             return this.MemberwiseClone();
@@ -46,7 +54,7 @@ namespace Core.ExternalSort
             {
                 case Action.Compare:
                     return $"Сравниваем {FromIndex} и {ToIndex}";
-                case Action.Move:
+                case Action.MoveAction:
                     return $"Поменяли местами {FromIndex} и {ToIndex}";
                 default:
                     throw new ArgumentException();

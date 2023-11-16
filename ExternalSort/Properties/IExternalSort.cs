@@ -9,6 +9,6 @@ namespace CoreHelper.ExternalSort
 {
     public interface IExternalSort
     {
-        public List<ExAction> Sort(string filename, ColumnType columnType, int columnNumber);
+        public Task Sort(string filename, ColumnType columnType, int columnNumber);
     }
 }

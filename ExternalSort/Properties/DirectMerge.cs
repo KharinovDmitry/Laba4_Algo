@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,29 +16,19 @@ namespace CoreHelper.ExternalSort
     public class DirectMerge : IExternalSort
     {
         public Logger logger = new Logger();
+        private ObservableCollection<CellsLine> _cells;
         public string FileInput { get; set; }
         private int _columnNumber = 0;
         private ColumnType _columnType = ColumnType.str;
         private long iterations, segments;
 
-        /*
-        public DirectMerge(string filename)
-        {
-            FileInput = filename;
-            iterations = 1;           
-        }
-        */
-        /*
-        public DirectMerge(string filename, int columnNumber)
-        {
-            FileInput = filename;
-            _columnNumber = columnNumber;
-            iterations = 1;
-        }
-        */
 
+        public DirectMerge(ObservableCollection<CellsLine> cells)
+        {
+            _cells = cells;
+        }
 
-        public List<ExAction> Sort(string filename, ColumnType type, int columnNumber)
+        public async Task Sort(string filename, ColumnType type, int columnNumber)
         {
             FileInput = filename;
             _columnNumber = columnNumber;
@@ -44,17 +37,17 @@ namespace CoreHelper.ExternalSort
 
             if (_columnType == ColumnType.str)
             {
-                return SortAsString();
+                SortAsString();
             }
             if (_columnType == ColumnType.integer)
             {
-                return SortAsInt();
+                SortAsInt();
             }
-            return null;
+            
         }
-        public List<ExAction> SortAsInt()
+        public async void SortAsInt()
         {
-            List<ExAction> actions = new();
+          
             while (true)
             {
                 SplitToFiles();
@@ -62,14 +55,14 @@ namespace CoreHelper.ExternalSort
                 {
                     break;
                 }
-                actions = actions.Concat(MergePairsAsInt()).ToList();
+                await MergePairsAsInt();
             }
-            return actions;
+          
         }
-        public List<ExAction> SortAsString()
+        public async void SortAsString()
         {
-            List<ExAction> actions = new();
-           
+            
+
             while (true)
             {
                 SplitToFiles();
@@ -77,9 +70,9 @@ namespace CoreHelper.ExternalSort
                 {
                     break;
                 }
-                actions = actions.Concat(MergePairsAsString()).ToList();
+                await MergePairsAsString();
             }
-            return actions;
+
         }
         private void SplitToFiles()
         {
@@ -114,7 +107,7 @@ namespace CoreHelper.ExternalSort
             }
         }
 
-        private List<ExAction> MergePairsAsInt()
+        private async Task MergePairsAsInt()
         {
             int indexInput = 0;
             int indexA = 0;
@@ -122,128 +115,128 @@ namespace CoreHelper.ExternalSort
             ExAction actionMove = new();
             ExAction actionCompare = new();
             List<ExAction> actions = new();
-            using StreamReader readerA = new StreamReader(File.OpenRead("a.txt"));
-            using StreamReader readerB = new StreamReader(File.OpenRead("b.txt"));
-            using StreamWriter sr = new StreamWriter(File.Create("data.txt"));
-            long counterA = iterations, counterB = iterations;
-            int elementA = 0, elementB = 0;
-            string strA = null, strB = null;
-            bool pickedA = false, pickedB = false;
-            while (!readerA.EndOfStream || !readerB.EndOfStream || pickedA || pickedB)
+            using (StreamReader readerA = new StreamReader(File.OpenRead("a.txt")))
+            using (StreamReader readerB = new StreamReader(File.OpenRead("b.txt")))
+            using (StreamWriter sr = new StreamWriter(File.Create("data.txt")))
             {
-                if (counterA == 0 && counterB != 0)
+                long counterA = iterations, counterB = iterations;
+                int elementA = 0, elementB = 0;
+                string strA = null, strB = null;
+                bool pickedA = false, pickedB = false;
+                while (!readerA.EndOfStream || !readerB.EndOfStream || pickedA || pickedB)
                 {
-                    logger.AddLog(new ExternalSteps("Write", $"Серия a закончилась, дописываем {counterB} элементов серии b."));
-                }
-                if (counterB == 0 && counterA != 0)
-                {
-                    logger.AddLog(new ExternalSteps("Write", $"Серия b закончилась, дописываем {counterA} элементов серии a."));
-                }
-                if (counterA == 0 && counterB == 0)
-                {
-                    counterA = iterations;
-                    counterB = iterations;
-                }
-                
-
-                if (!readerA.EndOfStream)
-                {
-                    if (counterA > 0 && !pickedA)
+                    indexInput = Math.Min(9, indexInput);
+                    indexA = Math.Min(9, indexA);
+                    indexB = Math.Min(9, indexB);
+                    if (counterA == 0 && counterB != 0)
                     {
-                        strA = readerA.ReadLine();
-                        elementA = int.Parse(strA.Split(";")[_columnNumber]);
-                        logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementA} с файла \"a.txt\"."));
-                        pickedA = true;
+                        logger.AddLog(new ExternalSteps("Write", $"Серия a закончилась, дописываем {counterB} элементов серии b."));
                     }
-                }
-
-                if (!readerB.EndOfStream)
-                {
-                    if (counterB > 0 && !pickedB)
+                    if (counterB == 0 && counterA != 0)
                     {
-                        strB = readerB.ReadLine();
-                        elementB = int.Parse(strB.Split(";")[_columnNumber]);
-                        logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementB} с файла \"b.txt\"."));
-                        pickedB = true;
+                        logger.AddLog(new ExternalSteps("Write", $"Серия b закончилась, дописываем {counterA} элементов серии a."));
                     }
-                }
-
-                if (pickedA)
-                {
-                    if (pickedB)
+                    if (counterA == 0 && counterB == 0)
                     {
-                        
-                        if (elementA < elementB)
+                        counterA = iterations;
+                        counterB = iterations;
+                    }
+
+
+                    if (!readerA.EndOfStream)
+                    {
+                        if (counterA > 0 && !pickedA)
                         {
-                            logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementA} из файла \"a.txt\" в файл \"{FileInput}\"."));
-                            sr.WriteLine(strA);
-                            counterA--;
-                            pickedA = false;
-                            actionMove.ElementA = elementA;
-                            actionMove.ElementB = elementB;
-                            actionMove.ToFile = FileInput;
-                            actionMove.FromFile = "a.txt";
-                            actionMove.FromIndex = indexA;
-                            actionMove.ToIndex = indexInput;
-                            indexInput++;
-                            indexA++;
+                            strA = readerA.ReadLine();
+                            elementA = int.Parse(strA.Split(";")[_columnNumber]);
+                            logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementA} с файла \"a.txt\"."));
+                            pickedA = true;
+                        }
+                    }
+
+                    if (!readerB.EndOfStream)
+                    {
+                        if (counterB > 0 && !pickedB)
+                        {
+                            strB = readerB.ReadLine();
+                            elementB = int.Parse(strB.Split(";")[_columnNumber]);
+                            logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementB} с файла \"b.txt\"."));
+                            pickedB = true;
+                        }
+                    }
+
+                    if (pickedA)
+                    {
+                        if (pickedB)
+                        {
+                            _cells[Index("b.txt")].Cells[indexB].Update(Action.Compare, elementB);
+                            _cells[Index("a.txt")].Cells[indexA].Update(Action.Compare, elementA);
+
+                            if (elementA < elementB)
+                            {
+                                logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementA} из файла \"a.txt\" в файл \"{FileInput}\"."));
+                                sr.WriteLine(strA);
+                                counterA--;
+                                pickedA = false;
+                                _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementA);
+                                _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, null);
+                                indexInput++;
+                                indexA++;
+                            }
+                            else
+                            {
+                                logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementB} из файла \"b.txt\" в файл \"{FileInput}\"."));
+                                sr.WriteLine(strB);
+                                counterB--;
+                                pickedB = false;
+                                _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementB);
+                                _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, null);
+                                indexInput++;
+                                indexB++;
+                            }
+                            await Task.Delay(100);
+                            Update();
+                            await Task.Delay(100);
+
                         }
                         else
                         {
-                            logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementB} из файла \"b.txt\" в файл \"{FileInput}\"."));
-                            sr.WriteLine(strB);
-                            counterB--;
-                            pickedB = false;
-                            actionMove.ElementA = elementA;
-                            actionMove.ElementB = elementB;
-                            actionMove.ToFile = FileInput;
-                            actionMove.FromFile = "b.txt";
-                            actionMove.FromIndex = indexB;
-                            actionMove.ToIndex = indexInput;
-                            indexInput++;
-                            indexB++;
+                            sr.WriteLine(strA);
+                            counterA--;
+                            pickedA = false;
+                            _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementA);
+                            indexA++;
                         }
-                        actionMove.Action = Core.ExternalSort.Action.Compare;
-                        
                     }
-                    else
+                    else if (pickedB)
                     {
-                        sr.WriteLine(strA);
-                        counterA--;
-                        pickedA = false;
+                        logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementB} из файла \"b.txt\" в файл \"{FileInput}\"."));
+                        sr.WriteLine(strB);
+                        counterB--;
+                        pickedB = false;
+                        _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementB);
+                        _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, null);
+                        indexInput++;
+                        indexB++;
+
+
                     }
-                }
-                else if (pickedB)
-                {
-                    logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementB} из файла \"b.txt\" в файл \"{FileInput}\"."));
-                    sr.WriteLine(strB);
-                    counterB--;
-                    pickedB = false;
-                    actionMove.ElementA = elementA;
-                    actionMove.ElementB = elementB;
-                    actionMove.ToFile = FileInput;
-                    actionMove.FromFile = "b.txt";
-                    actionMove.FromIndex = indexB;
-                    actionMove.ToIndex = indexInput;
-                    indexInput++;
-                    indexB++;
-                }
-                actionCompare = (ExAction)actionMove.Clone();
-                actionCompare.Action = Core.ExternalSort.Action.Compare;
-                actions.Add(actionCompare);
-                actions.Add(actionMove);
+                    actionCompare = (ExAction)actionMove.Clone();
 
+                    actions.Add(actionCompare);
+                    actions.Add(actionMove);
+                    await Task.Delay(100);
+                }
+                sr.Close();
+                readerA.Close();
+                readerB.Close();
+                iterations *= 2;
+                Console.WriteLine();
             }
-            sr.Close();
-            readerA.Close();
-            readerB.Close();
-            iterations *= 2;
-
-            Console.WriteLine();
-            return actions;
         }
-        private List<ExAction> MergePairsAsString()
+        private async Task MergePairsAsString()
         {
+
             int indexInput = 0;
             int indexA = 0;
             int indexB = 0;
@@ -260,7 +253,10 @@ namespace CoreHelper.ExternalSort
                 bool pickedA = false, pickedB = false;
                 while (!readerA.EndOfStream || !readerB.EndOfStream || pickedA || pickedB)
                 {
-                    
+                    indexInput = Math.Min(9, indexInput);
+                    indexA = Math.Min(9, indexA);
+                    indexB = Math.Min(9, indexB);
+
                     if (counterA == 0 && counterB != 0)
                     {
                         logger.AddLog(new ExternalSteps("Write", $"Серия a закончилась, дописываем {counterB} элементов серии b."));
@@ -275,7 +271,7 @@ namespace CoreHelper.ExternalSort
                         counterB = iterations;
                     }
 
-                    
+
                     if (!readerA.EndOfStream)
                     {
                         if (counterA > 0 && !pickedA)
@@ -283,7 +279,9 @@ namespace CoreHelper.ExternalSort
                             strA = readerA.ReadLine();
                             elementA = strA.Split(";")[_columnNumber];
                             logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementA} с файла \"a.txt\"."));
+                            _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, elementA);
                             pickedA = true;
+                            indexA++;
                         }
                     }
 
@@ -295,6 +293,8 @@ namespace CoreHelper.ExternalSort
                             elementB = strB.Split(";")[_columnNumber];
                             logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementB} с файла \"b.txt\"."));
                             pickedB = true;
+                            _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, elementB);
+                            indexB++;
                         }
                     }
 
@@ -302,18 +302,21 @@ namespace CoreHelper.ExternalSort
                     {
                         if (pickedB)
                         {
+                            
+                            indexInput = Math.Min(9, indexInput);
+                            indexB = Math.Min(9, indexB);
+                            indexA = Math.Min(9, indexA);
+                            await Task.Delay(100);
+                            Update();
+                            await Task.Delay(100);
                             if (String.CompareOrdinal(elementA, elementB) < 0)
                             {
                                 logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementA} из файла \"a.txt\" в файл \"{FileInput}\"."));
                                 sr.WriteLine(strA);
                                 counterA--;
                                 pickedA = false;
-                                actionMove.ElementA = elementA;
-                                actionMove.ElementB = elementB;
-                                actionMove.ToFile = FileInput;
-                                actionMove.FromFile = "a.txt";
-                                actionMove.FromIndex = indexA;
-                                actionMove.ToIndex = indexInput;
+                                _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementA);
+                                _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, null);
                                 indexInput++;
                                 indexA++;
                             }
@@ -323,31 +326,30 @@ namespace CoreHelper.ExternalSort
                                 sr.WriteLine(strB);
                                 counterB--;
                                 pickedB = false;
-                                actionMove.ElementA = elementA;
-                                actionMove.ElementB = elementB;
-                                actionMove.ToFile = FileInput;
-                                actionMove.FromFile = "b.txt";
-                                actionMove.FromIndex = indexB;
-                                actionMove.ToIndex = indexInput;
+                                _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementB);
+                                _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, null);                             
                                 indexInput++;
                                 indexB++;
+                                indexInput = Math.Min(9, indexInput);
+                                indexB = Math.Min(9, indexB);
                             }
 
                         }
                         else
                         {
+                            indexInput = Math.Min(9, indexInput);
+                            indexB = Math.Min(9, indexB);
+                            indexA = Math.Min(9, indexA);
                             logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementA} из файла \"a.txt\" в файл \"{FileInput}\"."));
                             sr.WriteLine(strA);
                             counterA--;
                             pickedA = false;
-                            actionMove.ElementA = elementA;
-                            actionMove.ElementB = elementB;
-                            actionMove.ToFile = FileInput;
-                            actionMove.FromFile = "a.txt";
-                            actionMove.FromIndex = indexA;
-                            actionMove.ToIndex = indexInput;
+                            _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementA);
+                            _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, null);
                             indexInput++;
                             indexA++;
+                            indexInput = Math.Min(9, indexInput);
+                            indexA = Math.Min(9, indexA);
                         }
                     }
                     else if (pickedB)
@@ -356,27 +358,61 @@ namespace CoreHelper.ExternalSort
                         sr.WriteLine(strB);
                         counterB--;
                         pickedB = false;
-                        actionMove.ElementA = elementA;
-                        actionMove.ElementB = elementB;
-                        actionMove.ToFile = FileInput;
-                        actionMove.FromFile = "b.txt";
-                        actionMove.FromIndex = indexB;
-                        actionMove.ToIndex = indexInput;
+                        _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementB);
+                        _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, null);
                         indexInput++;
                         indexB++;
                     }
-                    actionCompare = (ExAction) actionMove.Clone();
-                    actionCompare.Action = Core.ExternalSort.Action.Compare;
-                    actions.Add(actionCompare);
-                    actions.Add(actionMove);
 
                 }
-
+                await Task.Delay(100);
                 iterations *= 2;
                 Console.WriteLine();
-               
+                sr.Close();
             }
-            return actions;
+
+        }
+
+        private void Update()
+        {
+            foreach (var line in _cells)
+            {
+                foreach(var cell in line.Cells)
+                {
+                    cell.Update(Action.None, cell.Value);
+                }
+            }
+        }
+
+        private static int Index(string filename)
+        {
+            switch (filename)
+            {
+                case "data.txt": return 0;
+
+                case "a.txt": return 1;
+                case "b.txt": return 2;
+                default:
+                    return -1;
+            }
         }
     }
+
+
+
+
+
+
+
+    /*
+
+    Model       -> ViewModel    -> View
+data    
+    array|cell  -> graphics     -> Canvas
+            notification    notification
+
+
+
+
+ */
 }

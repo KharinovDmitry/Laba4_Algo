@@ -25,26 +25,25 @@ namespace CoreHelper.ExternalSort
         }
         */
         public List<ExAction> Sort(string filename, ColumnType type, int columnNumber)
-        {
-            throw new NotImplementedException();
-            /*
+        {                
             FileInput = filename;
             _columnNumber = columnNumber;
             _columnType = type;
             switch (type)
             {
-                case "str":
+                case ColumnType.str:
                     return SortAsString();
                     break;
-                case "integer":
-                
+                case ColumnType.integer:
+                    return SortAsInt();
+                    break;
             }
-            */
-           
+            return null;
         }
 
-        public void SortAsString()
+        public List<ExAction> SortAsString()
         {
+            List<ExAction> actions = new();
             while (true)
             {
                 SplitToFilesAsString();
@@ -54,9 +53,11 @@ namespace CoreHelper.ExternalSort
                 }
                 MergePairsAsString();
             }
+            return actions;
         }
-        public void SortAsInt()
+        public List<ExAction> SortAsInt()
         {
+            List<ExAction> actions = new();
             while (true)
             {
                 SplitToFilesAsInt();
@@ -66,6 +67,7 @@ namespace CoreHelper.ExternalSort
                 }
                 MergePairsAsInt();
             }
+            return actions;
         }
 
 
@@ -119,6 +121,12 @@ namespace CoreHelper.ExternalSort
         }
         private void MergePairsAsInt()
         {
+            int indexInput = 0;
+            int indexA = 0;
+            int indexB = 0;
+            ExAction actionMove = new();
+            ExAction actionCompare = new();
+            List<ExAction> actions = new();
             using StreamReader readerA = new StreamReader(File.OpenRead("a.txt"));
             using StreamReader readerB = new StreamReader(File.OpenRead("b.txt"));
             using StreamWriter bw = new StreamWriter(File.Create(FileInput));
@@ -159,12 +167,28 @@ namespace CoreHelper.ExternalSort
                             bw.WriteLine(strA);
                             logger.AddLog(new ExternalSteps("Info", $"Запись {elementA}"));
                             pickedA = false;
+                            actionMove.ElementA = elementA;
+                            actionMove.ElementB = elementB;
+                            actionMove.ToFile = FileInput;
+                            actionMove.FromFile = "a.txt";
+                            actionMove.FromIndex = indexA;
+                            actionMove.ToIndex = indexInput;
+                            indexInput++;
+                            indexA++;
                         }
                         else
                         {
                             bw.WriteLine(strB);
                             logger.AddLog(new ExternalSteps("Info", $"Запись {elementB}"));
                             pickedB = false;
+                            actionMove.ElementA = elementA;
+                            actionMove.ElementB = elementB;
+                            actionMove.ToFile = FileInput;
+                            actionMove.FromFile = "b.txt";
+                            actionMove.FromIndex = indexB;
+                            actionMove.ToIndex = indexInput;
+                            indexInput++;
+                            indexB++;
                         }
                     }
                     else
@@ -172,6 +196,14 @@ namespace CoreHelper.ExternalSort
                         bw.WriteLine(strA);
                         logger.AddLog(new ExternalSteps("Info", $"Запись {elementA}"));
                         pickedA = false;
+                        actionMove.ElementA = elementA;
+                        actionMove.ElementB = elementB;
+                        actionMove.ToFile = FileInput;
+                        actionMove.FromFile = "a.txt";
+                        actionMove.FromIndex = indexA;
+                        actionMove.ToIndex = indexInput;
+                        indexInput++;
+                        indexA++;
                     }
                 }
                 else
@@ -179,12 +211,21 @@ namespace CoreHelper.ExternalSort
                     bw.WriteLine(strB);
                     logger.AddLog(new ExternalSteps("Info", $"Запись {elementB}"));
                     pickedB = false;
+                    actionMove.ElementA = elementA;
+                    actionMove.ElementB = elementB;
+                    actionMove.ToFile = FileInput;
+                    actionMove.FromFile = "b.txt";
+                    actionMove.FromIndex = indexB;
+                    actionMove.ToIndex = indexInput;
+                    indexInput++;
+                    indexB++;
                 }
             }
         }
 
         private void SplitToFilesAsString()
         {
+
             _segments = 1;
             logger.AddLog(new ExternalSteps("Info", "Разделение на два файла"));
             using StreamReader sr = new StreamReader(File.OpenRead(FileInput));
@@ -233,6 +274,12 @@ namespace CoreHelper.ExternalSort
 
         private void MergePairsAsString()
         {
+            int indexInput = 0;
+            int indexA = 0;
+            int indexB = 0;
+            ExAction actionMove = new();
+            ExAction actionCompare = new();
+            List<ExAction> actions = new();
             using StreamReader readerA = new StreamReader(File.OpenRead("a.txt"));
             using StreamReader readerB = new StreamReader(File.OpenRead("b.txt"));
             using StreamWriter sw = new StreamWriter(File.Create(FileInput));
@@ -272,12 +319,28 @@ namespace CoreHelper.ExternalSort
                             sw.WriteLine(strA);
                             logger.AddLog(new ExternalSteps("Info", $"Запись {elementA}"));
                             pickedA = false;
+                            actionMove.ElementA = elementA;
+                            actionMove.ElementB = elementB;
+                            actionMove.ToFile = FileInput;
+                            actionMove.FromFile = "a.txt";
+                            actionMove.FromIndex = indexA;
+                            actionMove.ToIndex = indexInput;
+                            indexInput++;
+                            indexA++;
                         }
                         else
                         {
                             sw.WriteLine(strB);
                             logger.AddLog(new ExternalSteps("Info", $"Запись {elementB}"));
                             pickedB = false;
+                            actionMove.ElementA = elementA;
+                            actionMove.ElementB = elementB;
+                            actionMove.ToFile = FileInput;
+                            actionMove.FromFile = "b.txt";
+                            actionMove.FromIndex = indexB;
+                            actionMove.ToIndex = indexInput;
+                            indexInput++;
+                            indexB++;
                         }
                     }
                     else
@@ -285,6 +348,14 @@ namespace CoreHelper.ExternalSort
                         sw.WriteLine(strA);
                         logger.AddLog(new ExternalSteps("Info", $"Запись {elementA}"));
                         pickedA = false;
+                        actionMove.ElementA = elementA;
+                        actionMove.ElementB = elementB;
+                        actionMove.ToFile = FileInput;
+                        actionMove.FromFile = "a.txt";
+                        actionMove.FromIndex = indexA;
+                        actionMove.ToIndex = indexInput;
+                        indexInput++;
+                        indexA++;
                     }
                 }
                 else
@@ -292,6 +363,14 @@ namespace CoreHelper.ExternalSort
                     sw.WriteLine(strB);
                     logger.AddLog(new ExternalSteps("Info", $"Запись {elementB}"));
                     pickedB = false;
+                    actionMove.ElementA = elementA;
+                    actionMove.ElementB = elementB;
+                    actionMove.ToFile = FileInput;
+                    actionMove.FromFile = "b.txt";
+                    actionMove.FromIndex = indexB;
+                    actionMove.ToIndex = indexInput;
+                    indexInput++;
+                    indexB++;
                 }
             }
         }

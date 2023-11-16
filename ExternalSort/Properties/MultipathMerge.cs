@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,18 @@ namespace Core.ExternalSort
             this.SplitToFiles();
             
         }
+        
+        public async Task Sort(string filename, ColumnType type, int columnNumber)
+        {
+            FileInput = filename;
+            _columnNumber = columnNumber;
+            _columnType = type;
+            this.SplitToFiles();
+            MultipathMergeSort dm = new MultipathMergeSort(filename, columnNumber, type);
+            dm.SorT();
+        }
+
+        
         public MultipathMergeSort(string filename, int columnNumber, ColumnType type)
         {
             FileInput = filename;
@@ -41,10 +54,10 @@ namespace Core.ExternalSort
             FileInput = filename;
             _columnNumber = columnNumber;
             _lineComparer = new(_columnNumber, _columnType);
-            this.SplitToFiles();
-            
+            this.SplitToFiles();           
         }
-        public void Sort()
+        
+        public void SorT()
         {
             List<StreamReader> inputFiles = new();
             List<StreamWriter> outputFiles = new();

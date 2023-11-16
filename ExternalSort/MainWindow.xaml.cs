@@ -18,30 +18,30 @@ using CoreHelper;
 using CoreHelper.ExternalSort;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace ExternalSort
+namespace CoreHelper.ExternalSort
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    
+
     public partial class MainWindow : Window
     {
         private IExternalSort sortingAlgorithm;
-        //private Logger logger = new();
-        //delegate void SortingDelegate();
-        //SortingDelegate sortingMethod;
         int CNumber;
         string methodOfSorting;
-        Renderer renderer;
+        public ObservableCollection<CellsLine> CellsLines { get; set; }
+
         string path = "data.txt";
         
         ColumnType typeOfSorting;
         public MainWindow()
         {
             InitializeComponent();
-            renderer = new(CanvasImage);
+            CellsLines = new() { new CellsLine(0), new CellsLine(1), new CellsLine(2), new CellsLine(3) };
             ObservableCollection<ExternalSteps> externalSteps = Logger.Logs;
             logListView.ItemsSource = externalSteps;
+            Canvas2.ItemsSource = CellsLines;
+            
         }
         private void method_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -65,21 +65,23 @@ namespace ExternalSort
             }              
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             switch (methodOfSorting)
             {
                 case "Прямое слияние":
-                    sortingAlgorithm = new DirectMerge();
+                    sortingAlgorithm = new DirectMerge(CellsLines);
                     break;
                 case "Естественное слияние":
-                    sortingAlgorithm = new NaturalMergeSort();
+                    sortingAlgorithm = new NaturalMergeSort(CellsLines);
                     break;
                 case "Многопутевое слияние":
+                    sortingAlgorithm = new MultipathMergeSort(path, CNumber, typeOfSorting);
                     break;
                 
             }
-            renderer.Render(sortingAlgorithm.Sort(path, typeOfSorting, CNumber));
+
+            await sortingAlgorithm.Sort(path, typeOfSorting, CNumber);
         }
 
         private void columnNumber_TextChanged_1(object sender, TextChangedEventArgs e)
@@ -90,3 +92,5 @@ namespace ExternalSort
     
     }
 }
+
+
