@@ -17,23 +17,6 @@ namespace CoreHelper.ExternalSort
         private ColumnType _columnType = ColumnType.str;
         private long iterations, segments;
 
-        /*
-        public DirectMerge(string filename)
-        {
-            FileInput = filename;
-            iterations = 1;           
-        }
-        */
-        /*
-        public DirectMerge(string filename, int columnNumber)
-        {
-            FileInput = filename;
-            _columnNumber = columnNumber;
-            iterations = 1;
-        }
-        */
-
-
         public List<ExAction> Sort(string filename, ColumnType type, int columnNumber)
         {
             FileInput = filename;

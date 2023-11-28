@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Metrics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,6 +72,17 @@ namespace CoreHelper.ExternalSort
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            using (StreamReader st = new StreamReader(path)) 
+            {
+                int counter = 0;
+                while (counter != 10) 
+                {
+                    string str = st.ReadLine();
+                    string value = str.Split(";")[CNumber];
+                    CellsLines[0].Cells[counter].Update(Action.None, value);
+                    counter++;
+                } 
+            }
             Logger.Logs.Clear();
             switch (methodOfSorting)
             {
@@ -92,8 +105,17 @@ namespace CoreHelper.ExternalSort
         {
             CNumber = Convert.ToInt32(columnNumber.Text);
         }
+        private void Update()
+        {
+            foreach (var line in CellsLines)
+            {
+                foreach (var cell in line.Cells)
+                {
+                    cell.Update(Action.None, cell.Value);
+                }
+            }
+        }
 
-    
     }
 }
 

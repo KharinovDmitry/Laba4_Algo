@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Core.ExternalSort;
 using static System.Collections.Specialized.BitVector32;
 
@@ -37,20 +38,21 @@ namespace CoreHelper.ExternalSort
 
             if (_columnType == ColumnType.str)
             {
-                SortAsString();
+                await SortAsString(columnNumber);
+               
             }
             if (_columnType == ColumnType.integer)
             {
-                SortAsInt();
+                await SortAsInt(columnNumber);
             }
             
         }
-        public async void SortAsInt()
+        public async Task SortAsInt(int columnnumber)
         {
-          
+            
             while (true)
             {
-                SplitToFiles();
+                await SplitToFiles(columnnumber);
                 if (segments == 1)
                 {
                     break;
@@ -59,13 +61,13 @@ namespace CoreHelper.ExternalSort
             }
           
         }
-        public async void SortAsString()
+        public async Task SortAsString(int columnnumber)
         {
             
 
             while (true)
             {
-                SplitToFiles();
+                await SplitToFiles(columnnumber);
                 if (segments == 1)
                 {
                     break;
@@ -74,9 +76,12 @@ namespace CoreHelper.ExternalSort
             }
 
         }
-        private void SplitToFiles()
+        private async Task SplitToFiles(int columnnumber)
         {
             segments = 1;
+            int indexInput = 0;
+            int indexA = 0;
+            int indexB = 0;
             using (StreamReader sr = new StreamReader(FileInput))
             using (StreamWriter writerA = new StreamWriter("a.txt"))
             using (StreamWriter writerB = new StreamWriter("b.txt"))
@@ -94,13 +99,35 @@ namespace CoreHelper.ExternalSort
                     }
                     string element = sr.ReadLine();
 
+
+
                     if (flag)
                     {
                         writerA.WriteLine(element);
+                        indexInput = Math.Min(9, indexInput);
+                        indexA = Math.Min(9, indexA);
+                        _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, element.Split(";")[columnnumber]);
+                        _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, null);
+                        indexA++;
+                        indexInput++;
+
+                        await Task.Delay(1000);
+                        Update();
+                        await Task.Delay(1000);
                     }
                     else
                     {
                         writerB.WriteLine(element);
+                        indexInput = Math.Min(9, indexInput);
+                        indexB = Math.Min(9, indexB);
+                        _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, element.Split(";")[columnnumber]);
+                        _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, null);
+                        indexB++;
+                        indexInput++;
+                        
+                        await Task.Delay(1000);
+                        Update();
+                        await Task.Delay(1000);
                     }
                     counter++;
                 }
@@ -405,14 +432,9 @@ namespace CoreHelper.ExternalSort
 
 
     /*
-
     Model       -> ViewModel    -> View
 data    
     array|cell  -> graphics     -> Canvas
             notification    notification
-
-
-
-
  */
 }

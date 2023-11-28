@@ -13,7 +13,7 @@ namespace CoreHelper.ExternalSort
     public class CellsLine : INotifyPropertyChanged
     {
         public string Filename { get; set; }
-        private ObservableCollection<Cell> _cells;
+        //private ObservableCollection<Cell> _cells;
         public ObservableCollection<Cell> Cells { get; set; }
 
         public CellsLine(int fileN)
