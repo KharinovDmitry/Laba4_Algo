@@ -201,6 +201,9 @@ namespace CoreHelper.ExternalSort
 
                             if (elementA < elementB)
                             {
+                                await Task.Delay(1000);
+                                Update();
+                                await Task.Delay(100);
                                 logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementA} из файла \"a.txt\" в файл \"{FileInput}\"."));
                                 sr.WriteLine(strA);
                                 counterA--;
@@ -210,8 +213,12 @@ namespace CoreHelper.ExternalSort
                                 indexInput++;
                                 indexA++;
                             }
+
                             else
                             {
+                                await Task.Delay(1000);
+                                Update();
+                                await Task.Delay(1000);
                                 logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementB} из файла \"b.txt\" в файл \"{FileInput}\"."));
                                 sr.WriteLine(strB);
                                 counterB--;
@@ -221,7 +228,7 @@ namespace CoreHelper.ExternalSort
                                 indexInput++;
                                 indexB++;
                             }
-                            await Task.Delay(100);
+                            await Task.Delay(1000);
                             Update();
                             await Task.Delay(100);
 
@@ -229,20 +236,27 @@ namespace CoreHelper.ExternalSort
                         else
                         {
                             sr.WriteLine(strA);
+                            Update();
                             counterA--;
                             pickedA = false;
                             _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementA);
+                            _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, null);
+                            await Task.Delay(1000);
                             indexA++;
+                            indexInput++;
                         }
                     }
                     else if (pickedB)
                     {
+                        Update();
                         logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementB} из файла \"b.txt\" в файл \"{FileInput}\"."));
                         sr.WriteLine(strB);
                         counterB--;
                         pickedB = false;
+
                         _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementB);
                         _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, null);
+                        await Task.Delay(1000);
                         indexInput++;
                         indexB++;
 
@@ -252,13 +266,13 @@ namespace CoreHelper.ExternalSort
 
                     actions.Add(actionCompare);
                     actions.Add(actionMove);
-                    await Task.Delay(100);
+                    Update();
                 }
+                Update();
                 sr.Close();
                 readerA.Close();
                 readerB.Close();
                 iterations *= 2;
-                Console.WriteLine();
             }
         }
         private async Task MergePairsAsString()

@@ -124,18 +124,14 @@ namespace CoreHelper.ExternalSort
 
                 if (element1 > element2)
                 {
-                    //_cells[Index("a.txt")].Cells[indexA - 1].Update(Action.Compare, element1);
-                    //_cells[Index(FileInput)].Cells[indexInput].Update(Action.Compare, null);
+                    
                     flag = !flag;
                     _segments++;
-                    //indexA++;
-                    //indexInput++;
+                    Update();
                     indexInput = Math.Min(9, indexInput);
                     indexA = Math.Min(9, indexA);
 
-                    await Task.Delay(1000);
-                    Update();
-                    await Task.Delay(1000);
+                    
                 }
 
                 if (flag)
@@ -145,15 +141,17 @@ namespace CoreHelper.ExternalSort
                     indexA = Math.Min(9, indexA);
                     _cells[Index(FileInput)].Cells[indexInput - 1].Update(Action.Compare, element1);
                     _cells[Index(FileInput)].Cells[indexInput].Update(Action.Compare, element2);
+                    
                     await Task.Delay(500);
+
                     _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, element2);
                     _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, null);
                     indexA++;
                     indexInput++;
                 
-                    await Task.Delay(1000);
-                    Update();
-                    await Task.Delay(1000);
+                    //await Task.Delay(1000);
+                    //Update();
+                    //await Task.Delay(1000);
                 }
                 else
                 {
@@ -170,9 +168,9 @@ namespace CoreHelper.ExternalSort
                     indexB++;
                     indexInput++;
                     
-                    await Task.Delay(1000);
-                    Update();
-                    await Task.Delay(1000);
+                    //await Task.Delay(1000);
+                    //Update();
+                   // await Task.Delay(1000);
                 }
 
                 str1 = str2;
@@ -339,6 +337,8 @@ namespace CoreHelper.ExternalSort
                 if (str1 is null)
                 {
                     str1 = sr.ReadLine();
+                    indexInput = Math.Min(9, indexInput);
+                    indexA = Math.Min(9, indexA);
                     element1 = str1.Split(";")[_columnNumber];
                     writerA.WriteLine(str1);
                     _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, element1);
@@ -348,6 +348,7 @@ namespace CoreHelper.ExternalSort
                     await Task.Delay(1000);
                     Update();
                     await Task.Delay(1000);
+                  
                 }
 
                 str2 = sr.ReadLine();
@@ -365,6 +366,7 @@ namespace CoreHelper.ExternalSort
                     //_cells[Index("a.txt")].Cells[indexA].Update(Action.Compare, element1);
                     flag = !flag;
                     _segments++;
+                    Update();
                     //indexA++;
                     //indexInput++;
                 }
@@ -376,16 +378,17 @@ namespace CoreHelper.ExternalSort
                     writerA.WriteLine(str2);
                     _cells[Index(FileInput)].Cells[indexInput - 1].Update(Action.Compare, element1);
                     _cells[Index(FileInput)].Cells[indexInput].Update(Action.Compare, element2);
+
                     await Task.Delay(500);
+                    
                     _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, element2);
                     _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, null);
                     indexA++;
                     indexInput++;
                     
-                    await Task.Delay(1000);
-                    Update();
-                    await Task.Delay(1000);
-                  
+                    
+              
+
                 }
                 else
                 {
@@ -402,9 +405,21 @@ namespace CoreHelper.ExternalSort
 
                     indexB++;
                     indexInput++;
-                    await Task.Delay(1000);
-                    Update();
-                    await Task.Delay(1000);
+                 
+                    /*
+                     * writerB.WriteLine(str2);
+                    indexInput = Math.Min(9, indexInput);
+                    indexB = Math.Min(9, indexB);
+                    _cells[Index(FileInput)].Cells[indexInput - 1].Update(Action.Compare, element1);
+                    _cells[Index(FileInput)].Cells[indexInput].Update(Action.Compare, element2);
+
+                    await Task.Delay(500);
+
+                    _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, element2);
+                    _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, null);
+                    indexB++;
+                    indexInput++;
+                     */
                 }
 
                 str1 = str2;
