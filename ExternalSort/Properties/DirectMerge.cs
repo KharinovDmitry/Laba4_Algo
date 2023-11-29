@@ -111,9 +111,9 @@ namespace CoreHelper.ExternalSort
                         indexA++;
                         indexInput++;
 
-                        await Task.Delay(1000);
+                        await Task.Delay(500);
                         Update();
-                        await Task.Delay(1000);
+                        await Task.Delay(100);
                     }
                     else
                     {
@@ -125,9 +125,9 @@ namespace CoreHelper.ExternalSort
                         indexB++;
                         indexInput++;
                         
-                        await Task.Delay(1000);
+                        await Task.Delay(500);
                         Update();
-                        await Task.Delay(1000);
+                        await Task.Delay(100);
                     }
                     counter++;
                 }
@@ -320,9 +320,9 @@ namespace CoreHelper.ExternalSort
                             strA = readerA.ReadLine();
                             elementA = strA.Split(";")[_columnNumber];
                             logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementA} с файла \"a.txt\"."));
-                            _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, elementA);
+                            
                             pickedA = true;
-                            indexA++;
+                            
                         }
                     }
 
@@ -334,8 +334,8 @@ namespace CoreHelper.ExternalSort
                             elementB = strB.Split(";")[_columnNumber];
                             logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementB} с файла \"b.txt\"."));
                             pickedB = true;
-                            _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, elementB);
-                            indexB++;
+                            //_cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, elementB);
+                            
                         }
                     }
 
@@ -343,15 +343,14 @@ namespace CoreHelper.ExternalSort
                     {
                         if (pickedB)
                         {
-                            
-                            indexInput = Math.Min(9, indexInput);
-                            indexB = Math.Min(9, indexB);
-                            indexA = Math.Min(9, indexA);
-                            await Task.Delay(100);
-                            Update();
-                            await Task.Delay(100);
+                            _cells[Index("b.txt")].Cells[indexB].Update(Action.Compare, elementB);
+                            _cells[Index("a.txt")].Cells[indexA].Update(Action.Compare, elementA);
+
                             if (String.CompareOrdinal(elementA, elementB) < 0)
                             {
+                                await Task.Delay(1000);
+                                Update();
+                                await Task.Delay(100);
                                 logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementA} из файла \"a.txt\" в файл \"{FileInput}\"."));
                                 sr.WriteLine(strA);
                                 counterA--;
@@ -363,50 +362,59 @@ namespace CoreHelper.ExternalSort
                             }
                             else
                             {
+                                await Task.Delay(1000);
+                                Update();
+                                await Task.Delay(1000);
                                 logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementB} из файла \"b.txt\" в файл \"{FileInput}\"."));
                                 sr.WriteLine(strB);
                                 counterB--;
                                 pickedB = false;
                                 _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementB);
-                                _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, null);                             
+                                _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, null);
                                 indexInput++;
                                 indexB++;
-                                indexInput = Math.Min(9, indexInput);
-                                indexB = Math.Min(9, indexB);
                             }
+                            await Task.Delay(1000);
+                            Update();
+                            await Task.Delay(100);
 
                         }
                         else
                         {
-                            indexInput = Math.Min(9, indexInput);
-                            indexB = Math.Min(9, indexB);
-                            indexA = Math.Min(9, indexA);
-                            logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementA} из файла \"a.txt\" в файл \"{FileInput}\"."));
                             sr.WriteLine(strA);
+                            Update();
                             counterA--;
                             pickedA = false;
                             _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementA);
                             _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, null);
-                            indexInput++;
+                            await Task.Delay(1000);
                             indexA++;
-                            indexInput = Math.Min(9, indexInput);
-                            indexA = Math.Min(9, indexA);
+                            indexInput++;
                         }
                     }
                     else if (pickedB)
                     {
+                        Update();
                         logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementB} из файла \"b.txt\" в файл \"{FileInput}\"."));
                         sr.WriteLine(strB);
                         counterB--;
                         pickedB = false;
+
                         _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, elementB);
                         _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, null);
+                        await Task.Delay(1000);
                         indexInput++;
                         indexB++;
                     }
+                    Update();
+                    actionCompare = (ExAction)actionMove.Clone();
 
+                    actions.Add(actionCompare);
+                    actions.Add(actionMove);
                 }
                 await Task.Delay(100);
+                Update();
+
                 iterations *= 2;
                 Console.WriteLine();
                 sr.Close();

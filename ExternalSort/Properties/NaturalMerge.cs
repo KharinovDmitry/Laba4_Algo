@@ -113,9 +113,9 @@ namespace CoreHelper.ExternalSort
                     indexInput++;
                     indexInput = Math.Min(9, indexInput);
                     indexA = Math.Min(9, indexA);
-                    await Task.Delay(1000);
+                    await Task.Delay(500);
                     Update();
-                    await Task.Delay(1000);
+                    await Task.Delay(100);
                 }
 
                 str2 = br.ReadLine();
@@ -345,9 +345,9 @@ namespace CoreHelper.ExternalSort
                     _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, null);
                     indexA++;
                     indexInput++;
-                    await Task.Delay(1000);
+                    await Task.Delay(500);
                     Update();
-                    await Task.Delay(1000);
+                    await Task.Delay(100);
                   
                 }
 

@@ -83,6 +83,7 @@ namespace CoreHelper.ExternalSort
                     counter++;
                 } 
             }
+            await Task.Delay(1000);
             Logger.Logs.Clear();
             switch (methodOfSorting)
             {
@@ -93,7 +94,7 @@ namespace CoreHelper.ExternalSort
                     sortingAlgorithm = new NaturalMergeSort(CellsLines);
                     break;
                 case "Многопутевое слияние":
-                    sortingAlgorithm = new MultipathMergeSort(path, CNumber, typeOfSorting);
+                    sortingAlgorithm = new MultipathMergeSort(CellsLines);
                     break;
                 
             }
@@ -105,17 +106,6 @@ namespace CoreHelper.ExternalSort
         {
             CNumber = Convert.ToInt32(columnNumber.Text);
         }
-        private void Update()
-        {
-            foreach (var line in CellsLines)
-            {
-                foreach (var cell in line.Cells)
-                {
-                    cell.Update(Action.None, cell.Value);
-                }
-            }
-        }
-
     }
 }
 

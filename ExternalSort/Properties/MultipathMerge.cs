@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using CoreHelper;
-using CoreHelper.ExternalSort;
+using System.Xml.Linq;
+using Core.ExternalSort;
+using static System.Collections.Specialized.BitVector32;
 
-namespace Core.ExternalSort
+namespace CoreHelper.ExternalSort
 {
     public class MultipathMergeSort : IExternalSort
     {
@@ -18,6 +24,8 @@ namespace Core.ExternalSort
         string FileInput = "data.txt";
         int maxWays = 3;
         LineComparer _lineComparer;
+        private ObservableCollection<CellsLine> _cells;
+        /*
         public MultipathMergeSort(string filename, int columnNumber, ColumnType type, int maxWays)
         {
             FileInput = filename;
@@ -28,43 +36,51 @@ namespace Core.ExternalSort
             this.SplitToFiles();
             
         }
-        /*
-        public async Task Sort(string filename, ColumnType type, int columnNumber)
-        {
-            FileInput = filename;
-            _columnNumber = columnNumber;
-            _columnType = type;
-            this.SplitToFiles();
-            
-        }
         */
+        /*
+       public async Task Sort(string filename, ColumnType type, int columnNumber)
+       {
+           FileInput = filename;
+           _columnNumber = columnNumber;
+           _columnType = type;
+           this.SplitToFiles();
 
-        
-        public MultipathMergeSort(string filename, int columnNumber, ColumnType type)
-        {
-            FileInput = filename;
-            _columnNumber = columnNumber;
-            _columnType = type;
-            _lineComparer = new(_columnNumber, _columnType);
-            this.SplitToFiles();
-        
-        }
+       }
+       */
         /*
-        public MultipathMergeSort(string filename, int columnNumber)
+       public MultipathMergeSort(string filename, int columnNumber)
+       {
+           FileInput = filename;
+           _columnNumber = columnNumber;
+           _lineComparer = new(_columnNumber, _columnType);
+           this.SplitToFiles();           
+       }
+       */
+        /*
+     public MultipathMergeSort(string filename, int columnNumber, ColumnType type)
+     {
+         FileInput = filename;
+         _columnNumber = columnNumber;
+         _columnType = type;
+         _lineComparer = new(_columnNumber, _columnType);
+         this.SplitToFiles(columnNumber);
+
+     }
+           */
+        public MultipathMergeSort(ObservableCollection<CellsLine> cells)
         {
-            FileInput = filename;
-            _columnNumber = columnNumber;
-            _lineComparer = new(_columnNumber, _columnType);
-            this.SplitToFiles();           
+            _cells = cells;
         }
-        */
-        
+       
+
+     
         public async Task Sort(string filename, ColumnType type, int columnNumber)
         {
             FileInput = filename;
             _columnNumber = columnNumber;
             _columnType = type;
-            this.SplitToFiles();
+            _lineComparer = new(_columnNumber, _columnType);
+            await this.SplitToFiles(columnNumber);
             List<StreamReader> inputFiles = new();
             List<StreamWriter> outputFiles = new();
             List<bool> isInputValid = new();
@@ -77,6 +93,7 @@ namespace Core.ExternalSort
             string str1;
             string str2;
             string? readenString;
+            int[] arrayindex = new int[10];
             for (int i = 0; i < maxWays; i++)
             {
                 inputFiles.Add(new StreamReader($"f{i}.txt"));
@@ -92,9 +109,10 @@ namespace Core.ExternalSort
                 }
 
             }
-
+            
             while (true)
             {
+                Update();
                 if (count == 1)
                 {
                     break;
@@ -103,10 +121,17 @@ namespace Core.ExternalSort
                 {
                     while (numOfValidInputs > 0)
                     {
+                        arrayindex[currentOutputFileId] = Math.Min(arrayindex[currentOutputFileId], 9);
                         int minElemIndex = IndexOfMin(currElements, isInputValid);
 
                         outputFiles[currentOutputFileId].WriteLine(currElements[minElemIndex]);
                         logger.AddLog(new ExternalSteps("Write", $"Записываем элемент {currElements[minElemIndex]} в файл f{(!isOrderInversed ? currentOutputFileId + maxWays : currentOutputFileId)}"));
+
+                        _cells[currentOutputFileId].Cells[arrayindex[currentOutputFileId]++].Update(Action.MoveAction, currElements[minElemIndex].Split(";")[columnNumber]);
+                        await Task.Delay(500);
+                        //arrayindex[currentOutputFileId]++;
+
+
                         string? nextElem = inputFiles[minElemIndex].ReadLine();
                         logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {nextElem} из файла f{(!isOrderInversed ? minElemIndex : minElemIndex + maxWays)}"));
 
@@ -117,7 +142,7 @@ namespace Core.ExternalSort
                             numOfValidInputs--;
                         }
                         else if (_lineComparer.Compare(nextElem, currElements[minElemIndex]) < 0)
-                                      {
+                        {
 
                             isInputValid[minElemIndex] = false;
                             numOfValidInputs--;
@@ -217,13 +242,20 @@ namespace Core.ExternalSort
         }
 
 
-        private void SplitToFiles()
+        private async Task SplitToFiles(int columnnumber)
         {
+            Update();
             logger.AddLog(new ExternalSteps("Info", $"Разделение на {maxWays} файла(ов)"));
             var origFile = new StreamReader(File.OpenRead(FileInput));
             List<StreamWriter> files = new();
+            int indexInput = 0;
+            int indexf0 = 0;
+            int indexf1 = 0;
+            int indexf2 = 0;
+            int[] arrayindex = new int[3];
             for (int i = 0; i < maxWays; i++)
             {
+                
                 files.Add(new StreamWriter(File.Create($"f{i}.txt")));
                 File.Create($"f{i + maxWays}.txt").Close();
             }
@@ -233,30 +265,68 @@ namespace Core.ExternalSort
             readenString = origFile.ReadLine();
             str2 = readenString.Split(';')[_columnNumber];
             files[0].WriteLine(readenString);
+
+            //Trace.WriteLine(files[0].GetType());
+
+            _cells[0].Cells[indexInput].Update(Action.MoveAction, null);
+            _cells[1].Cells[arrayindex[0]].Update(Action.MoveAction, readenString.Split(";")[columnnumber]);
+            arrayindex[0]++;
+            indexInput++;
+            await Task.Delay(500);
+            Update();
+
             var j = 0;
+            //int indexfile = 0;
             for (; ; )
             {
+                indexInput = Math.Min(9, indexInput);
+                arrayindex[j] = Math.Min(9, arrayindex[j]);
                 str1 = str2;
                 readenString = origFile.ReadLine();
                 if (readenString is null) break;
                 str2 = readenString.Split(';')[_columnNumber];
+                
                 if (_columnType == ColumnType.integer)
                 {
+                    _cells[0].Cells[indexInput - 1].Update(Action.Compare, str1);
+                    _cells[0].Cells[indexInput].Update(Action.Compare, str2);
+
+                    indexInput = Math.Min(9, indexInput);
+                    await Task.Delay(500);
+                    Update();
                     if (int.Parse(str1) > int.Parse(str2))
                     {
-                        j++;
+                        j++;                       
                     }
                 }
                 else
                 {
+                    _cells[0].Cells[indexInput - 1].Update(Action.Compare, str1);
+                    _cells[0].Cells[indexInput].Update(Action.Compare, str2);
+
+                    indexInput = Math.Min(9, indexInput);
+                    await Task.Delay(500);
+                    Update();
                     if (String.CompareOrdinal(str1, str2) > 0)
                     {
-                        j++;
+                        j++;  
                     }
                 }
 
-                if (j >= maxWays) j = 0;
+                if (j >= maxWays)
+                {
+                    j = 0;
+                    
+                }
                 files[j].WriteLine(readenString);
+
+                _cells[0].Cells[indexInput].Update(Action.MoveAction, null);
+                _cells[j + 1].Cells[arrayindex[j]].Update(Action.MoveAction, readenString.Split(";")[columnnumber]);
+                await Task.Delay(1000);
+                Update();
+                indexInput++;
+                arrayindex[j]++;
+
             }
             for (var i = 0; i < maxWays; i++)
                 files[i].Close();
@@ -286,5 +356,29 @@ namespace Core.ExternalSort
                 }
             }
         }
+        private static int Index(string filename)
+        {
+            switch (filename)
+            {
+                case "data.txt": return 0;
+
+                case "f0.txt": return 1;
+                case "f1.txt": return 2;
+                case "f2.txt": return 3;
+                default:
+                    return -1;
+            }
+        }
+        private void Update()
+        {
+            foreach (var line in _cells)
+            {
+                foreach (var cell in line.Cells)
+                {
+                    cell.Update(Action.None, cell.Value);
+                }
+            }
+        }
     }
+
 }
