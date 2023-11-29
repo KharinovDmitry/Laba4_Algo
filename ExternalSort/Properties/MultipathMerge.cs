@@ -25,48 +25,7 @@ namespace CoreHelper.ExternalSort
         int maxWays = 3;
         LineComparer _lineComparer;
         private ObservableCollection<CellsLine> _cells;
-        /*
-        public MultipathMergeSort(string filename, int columnNumber, ColumnType type, int maxWays)
-        {
-            FileInput = filename;
-            _columnNumber = columnNumber;
-            _columnType = type;
-            _lineComparer = new(_columnNumber, _columnType);
-            this.maxWays = maxWays;
-            this.SplitToFiles();
-            
-        }
-        */
-        /*
-       public async Task Sort(string filename, ColumnType type, int columnNumber)
-       {
-           FileInput = filename;
-           _columnNumber = columnNumber;
-           _columnType = type;
-           this.SplitToFiles();
 
-       }
-       */
-        /*
-       public MultipathMergeSort(string filename, int columnNumber)
-       {
-           FileInput = filename;
-           _columnNumber = columnNumber;
-           _lineComparer = new(_columnNumber, _columnType);
-           this.SplitToFiles();           
-       }
-       */
-        /*
-     public MultipathMergeSort(string filename, int columnNumber, ColumnType type)
-     {
-         FileInput = filename;
-         _columnNumber = columnNumber;
-         _columnType = type;
-         _lineComparer = new(_columnNumber, _columnType);
-         this.SplitToFiles(columnNumber);
-
-     }
-           */
         public MultipathMergeSort(ObservableCollection<CellsLine> cells)
         {
             _cells = cells;
@@ -130,7 +89,7 @@ namespace CoreHelper.ExternalSort
 
                         _cells[currentOutputFileId].Cells[arrayindex[currentOutputFileId]++].Update(Action.MoveAction, currElements[minElemIndex].Split(";")[columnNumber]);
                         await Task.Delay(500);
-                        //arrayindex[currentOutputFileId]++;
+                       
 
 
                         string? nextElem = inputFiles[minElemIndex].ReadLine();
@@ -267,7 +226,7 @@ namespace CoreHelper.ExternalSort
             str2 = readenString.Split(';')[_columnNumber];
             files[0].WriteLine(readenString);
 
-            //Trace.WriteLine(files[0].GetType());
+           
 
             _cells[0].Cells[indexInput].Update(Action.MoveAction, null);
             _cells[1].Cells[arrayindex[0]].Update(Action.MoveAction, readenString.Split(";")[columnnumber]);
@@ -277,7 +236,7 @@ namespace CoreHelper.ExternalSort
             Update();
 
             var j = 0;
-            //int indexfile = 0;
+        
             for (; ; )
             {
                 indexInput = Math.Min(9, indexInput);

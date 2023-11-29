@@ -84,6 +84,9 @@ namespace CoreHelper.ExternalSort
                 } 
             }
             await Task.Delay(1000);
+
+            
+            
             Logger.Logs.Clear();
             switch (methodOfSorting)
             {
@@ -100,6 +103,14 @@ namespace CoreHelper.ExternalSort
             }
 
             await sortingAlgorithm.Sort(path, typeOfSorting, CNumber);
+            await Task.Delay(1000);
+            foreach (var line in CellsLines)
+            {
+                foreach (var cell in line.Cells)
+                {
+                    cell.Update(Action.None, 0);
+                }
+            }
         }
 
         private void columnNumber_TextChanged_1(object sender, TextChangedEventArgs e)

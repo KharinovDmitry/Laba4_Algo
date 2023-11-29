@@ -331,7 +331,7 @@ namespace CoreHelper.ExternalSort
                             elementB = strB.Split(";")[_columnNumber];
                             logger.AddLog(new ExternalSteps("Read", $"Считываем элемент {elementB} с файла \"b.txt\"."));
                             pickedB = true;
-                            //_cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, elementB);
+                           
                             
                         }
                     }
