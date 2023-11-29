@@ -113,6 +113,7 @@ namespace CoreHelper.ExternalSort
             while (true)
             {
                 Update();
+                arrayindex = new int[10];
                 if (count == 1)
                 {
                     break;

@@ -450,15 +450,4 @@ namespace CoreHelper.ExternalSort
 
 
 
-    /*
-    Model       -> ViewModel    -> View
-data    
-    array|cell  -> graphics     -> Canvas
-            notification    notification
- */
-
-
-
-
- */
 }
