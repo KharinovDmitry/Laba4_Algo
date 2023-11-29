@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Metrics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,6 +72,21 @@ namespace CoreHelper.ExternalSort
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            using (StreamReader st = new StreamReader(path)) 
+            {
+                int counter = 0;
+                while (counter != 10) 
+                {
+                    string str = st.ReadLine();
+                    string value = str.Split(";")[CNumber];
+                    CellsLines[0].Cells[counter].Update(Action.None, value);
+                    counter++;
+                } 
+            }
+            await Task.Delay(1000);
+
+            
+            
             Logger.Logs.Clear();
             switch (methodOfSorting)
             {
@@ -80,20 +97,26 @@ namespace CoreHelper.ExternalSort
                     sortingAlgorithm = new NaturalMergeSort(CellsLines);
                     break;
                 case "Многопутевое слияние":
-                    sortingAlgorithm = new MultipathMergeSort(path, CNumber, typeOfSorting);
+                    sortingAlgorithm = new MultipathMergeSort(CellsLines);
                     break;
                 
             }
 
             await sortingAlgorithm.Sort(path, typeOfSorting, CNumber);
+            await Task.Delay(1000);
+            foreach (var line in CellsLines)
+            {
+                foreach (var cell in line.Cells)
+                {
+                    cell.Update(Action.None, 0);
+                }
+            }
         }
 
         private void columnNumber_TextChanged_1(object sender, TextChangedEventArgs e)
         {
             CNumber = Convert.ToInt32(columnNumber.Text);
         }
-
-    
     }
 }
 

@@ -77,27 +77,6 @@ namespace Core.ExternalSort
             }
         }
 
-        /*private void Render()
-        {
-            using (var bmp = new Bitmap((int)Image.Width, (int)Image.Height))
-            using (var gfx = Graphics.FromImage(bmp))
-            using (var pen = new System.Drawing.Pen(System.Drawing.Color.White))
-            {
-                // draw one thousand random white lines on a dark blue background
-                gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                gfx.Clear(System.Drawing.Color.Navy);
-                for (int i = 0; i < 1000; i++)
-                {
-                    var pt1 = new System.Drawing.Point(rand.Next(bmp.Width), rand.Next(bmp.Height));
-                    var pt2 = new System.Drawing.Point(rand.Next(bmp.Width), rand.Next(bmp.Height));
-                    gfx.DrawLine(pen, pt1, pt2);
-                }
-
-                Image.Source = BmpImageFromBmp(bmp);
-            }
-        }
-*/
-
         public void Render(List<ExAction> actions)
         {
             using (var bmp = new Bitmap((int)Image.Width, (int)Image.Height))
