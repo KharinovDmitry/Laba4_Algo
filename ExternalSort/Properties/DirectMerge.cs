@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Core.ExternalSort;
 using static System.Collections.Specialized.BitVector32;
 
@@ -22,7 +21,6 @@ namespace CoreHelper.ExternalSort
         private int _columnNumber = 0;
         private ColumnType _columnType = ColumnType.str;
         private long iterations, segments;
-
 
         public DirectMerge(ObservableCollection<CellsLine> cells)
         {
@@ -88,7 +86,6 @@ namespace CoreHelper.ExternalSort
             {
                 long counter = 0;
                 bool flag = true;
-
                 while (!sr.EndOfStream)
                 {
                     if (counter == iterations)
@@ -458,5 +455,10 @@ namespace CoreHelper.ExternalSort
 data    
     array|cell  -> graphics     -> Canvas
             notification    notification
+ */
+
+
+
+
  */
 }

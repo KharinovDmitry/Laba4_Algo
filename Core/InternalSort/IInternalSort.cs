@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CoreHelper;
 
-namespace CoreHelper.TextSort
+namespace Core.InternalSort
 {
-    internal interface ITextSort
+    public interface IInternalSort
     {
-        public string Sort(string text); 
+        public List<SortStep> Sort(int[] arr);
     }
 }

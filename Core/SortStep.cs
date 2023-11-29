@@ -9,7 +9,8 @@ namespace CoreHelper
     public enum SortOperation
     {
         Swap,
-        Compare
+        Compare,
+        SetValue
     }
 
     public class SortStep
@@ -24,5 +25,22 @@ namespace CoreHelper
             ToIndex = toIndex;
             Operation = operation;
         }
+     
+
+        public override string ToString()
+        {
+            switch (Operation)
+            {
+                case SortOperation.Swap:
+                    return $"Поменяли местами {FromIndex} и {ToIndex}";
+                case SortOperation.Compare:
+                    return $"Сравниваем {FromIndex} и {ToIndex}";
+                case SortOperation.SetValue:
+                    return $"В {ToIndex} записываем {FromIndex}";
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
     }
 }
