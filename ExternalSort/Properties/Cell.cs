@@ -16,7 +16,8 @@ namespace CoreHelper.ExternalSort
     {
         Compare,
         MoveAction,
-        None
+        None,
+        Ex
     }
     public class Cell : INotifyPropertyChanged
     {
@@ -26,6 +27,7 @@ namespace CoreHelper.ExternalSort
         private object _value;
         private int width;
         private int height;
+        private SolidColorBrush color;
         public int FileN { get { return fileN; } private set { fileN = value; NotifyPropertyChanged(nameof(FileN)); } }
         public Action Action { get { return action; } private set { action = value; NotifyPropertyChanged(nameof(Action)); NotifyPropertyChanged(nameof(Color)); } }
         public object Value { get { return _value; } private set { _value = value; NotifyPropertyChanged(nameof(Value)); } }
@@ -35,6 +37,8 @@ namespace CoreHelper.ExternalSort
                         return new SolidColorBrush(Colors.Orange);
                     case Action.MoveAction:
                         return new SolidColorBrush(Colors.Blue);
+                    
+                       
                     default:
                         return new SolidColorBrush(Colors.White);
                 }
@@ -57,6 +61,10 @@ namespace CoreHelper.ExternalSort
 
         public void Update(Action action, object value)
         {
+            if (Action.Ex == action)
+            {
+                return;
+            }
             Action = action;
             Value = value;
         }
