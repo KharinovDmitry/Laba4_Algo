@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
+using System.Xml.Linq;
 using Core.ExternalSort;
 using static System.Collections.Specialized.BitVector32;
 
@@ -80,9 +82,11 @@ namespace CoreHelper.ExternalSort
             int indexInput = 0;
             int indexA = 0;
             int indexB = 0;
+            int indexChess = 0;
             using (StreamReader sr = new StreamReader(FileInput))
             using (StreamWriter writerA = new StreamWriter("a.txt"))
             using (StreamWriter writerB = new StreamWriter("b.txt"))
+
             {
                 long counter = 0;
                 bool flag = true;
@@ -111,6 +115,7 @@ namespace CoreHelper.ExternalSort
                         await Task.Delay(500);
                         Update();
                         await Task.Delay(100);
+
                     }
                     else
                     {
@@ -121,18 +126,72 @@ namespace CoreHelper.ExternalSort
                         _cells[Index(FileInput)].Cells[indexInput].Update(Action.MoveAction, null);
                         indexB++;
                         indexInput++;
-                        
+
                         await Task.Delay(500);
                         Update();
                         await Task.Delay(100);
+
                     }
                     counter++;
                 }
             }
+
+            string lineB;
+            string lineA;
+            int element1;
+            int element2;
+            indexA = 0;
+            indexB = 0;
+            try
+            {
+                StreamReader srB = new StreamReader(File.OpenRead("a.txt"));
+                StreamReader srA = new StreamReader(File.OpenRead("b.txt"));
+                lineB = srB.ReadLine();
+                lineA = srA.ReadLine();
+                
+                while (lineB != null)
+                {
+                    indexChess = Math.Min(9, indexChess);
+                    element1 = int.Parse(lineB.Split(";")[_columnNumber]);
+                    element2 = int.Parse(lineA.Split(";")[_columnNumber]);
+                    if (indexChess != iterations)
+                    {
+                        indexB = Math.Min(9, indexB);
+                        indexA = Math.Min(9, indexA);
+                        _cells[Index("b.txt")].Cells[indexB].Update(Action.None, _cells[Index("b.txt")].Cells[indexB].Value);
+                        _cells[Index("a.txt")].Cells[indexA].Update(Action.None, _cells[Index("a.txt")].Cells[indexA].Value);
+                        element2 = element1;
+                        indexChess++;
+                        indexA++;
+                        indexB++;
+                    }
+                    else
+                    {
+                        while (indexChess != 0)
+                        {
+                            indexA = Math.Min(9, indexA);
+                            indexB = Math.Min(9, indexB);
+                            _cells[Index("b.txt")].Cells[indexB].Update(Action.MoveAction, _cells[Index("b.txt")].Cells[indexB].Value);
+                            _cells[Index("a.txt")].Cells[indexA].Update(Action.MoveAction, _cells[Index("a.txt")].Cells[indexA].Value);
+                            indexA++;
+                            indexB++;
+                            indexChess--;
+                        }
+                        await Task.Delay(500);
+                    }
+                    lineB = srB.ReadLine();
+                }
+                srB.Close();
+                await Task.Delay(1000);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e.Message);
+            }
         }
 
         private async Task MergePairsAsInt()
-        {
+        {        
             int indexInput = 0;
             int indexA = 0;
             int indexB = 0;
@@ -199,7 +258,7 @@ namespace CoreHelper.ExternalSort
                             if (elementA < elementB)
                             {
                                 await Task.Delay(1000);
-                                Update();
+                                //Update();
                                 await Task.Delay(100);
                                 logger.AddLog(new ExternalSteps("Write", $"Добавляем {elementA} из файла \"a.txt\" в файл \"{FileInput}\"."));
                                 sr.WriteLine(strA);
@@ -269,6 +328,7 @@ namespace CoreHelper.ExternalSort
                 sr.Close();
                 readerA.Close();
                 readerB.Close();
+
                 iterations *= 2;
             }
         }
